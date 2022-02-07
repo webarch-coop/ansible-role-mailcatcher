@@ -59,14 +59,14 @@
 
       when: mailcatcher_which == 0
 
-    - name: "Install Mailcatcher {{ mailcatcher_version }}"
+    - name: Install Mailcatcher
       gem:
         name: mailcatcher
         version: "{{ mailcatcher_latest }}"
         state: present
         user_install: false
       when:
-        - mailcatcher_version is defined
+        - mailcatcher_latest is defined
         - ( mailcatcher_which.rc == 1 ) or ( mailcatcher_upgrade is defined and mailcatcher_upgrade )
       notify: Restart mailcatcher
 
