@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Mailcatcher
+
+[Service]
+Type=simple
+ExecStart={{ mailcatcher_bin_dir }}/mailcatcher --foreground --smtp-ip {{ mailcatcher_smtp_ip }} --smtp-port {{ mailcatcher_smtp_port }} --http-ip {{ mailcatcher_http_ip }} --http-port {{ mailcatcher_http_port }}
+ExecStop=/usr/bin/killall -9 mailcatcher
+
+[Install]
+WantedBy=multi-user.target
+
+# vim: set ft=systemd:
