@@ -26,11 +26,12 @@
           - "Path: {{ mailcatcher_headers.location | urlsplit('path') }}"
           - "Version: {{ mailcatcher_headers.location | urlsplit('path') | basename }}"
           - "Version number: {{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
+          - "Version number as string: {{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') | str }}"
         verbosity: 2
 
     - name: Set a variable for the latest version available
       set_fact:
-        mailcatcher_latest: "{{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
+        mailcatcher_latest: "{{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') | str }}"
 
     - name: Check if Mailcatcher is installed
       command: which mailcatcher
