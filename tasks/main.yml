@@ -55,7 +55,7 @@
         - name: Set a fact if a newer version is available
           set_fact:
             mailcatcher_upgrade: true
-          when: mailcatcher_installed is version(mailcatcher_version, '<')
+          when: mailcatcher_installed is version(mailcatcher_latest, '<')
 
       when: mailcatcher_which.rc == 0
 
