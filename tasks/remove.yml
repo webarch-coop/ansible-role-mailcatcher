@@ -1,0 +1,31 @@
+---
+- name: Mailcatcher absent
+  block:
+
+    - name: Stat Mailcatcher systemd service file
+      file:
+        stat: /etc/systemd/system/mailcatcher.service
+      register: mailcatcher_systemd
+
+    - name: Stop Mailcatcher
+      systemd:
+        name: mailcatcher
+        state: stopped
+      when: mailcatcher_systemd.stat.exists
+
+    - name: Mailcatcher files absent
+      file:
+        path: "{{ path }}"
+        state: absent
+      loop:
+        - /usr/local/bin/mailcatcher
+        - /etc/systemd/system/mailcatcher.service
+
+    - name: Mailcatcher absent
+      gem:
+        name: mailcatcher
+        state: absent
+
+  tags:
+    - mailcatcher
+...

@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+account default
+host {{ mailcatcher_smtp_ip }}
+port {{ mailcatcher_smtp_port }} 
+# Is from needed?
+from {{ mailcatcher_msmtp_from }}

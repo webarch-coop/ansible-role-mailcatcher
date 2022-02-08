@@ -1,8 +1,11 @@
 ---
-mailcathcer_domain: "mailcatcher.{{ inventory_hostname }}"
-mailcatcher_bin_dir: /usr/local/bin
+mailcatcher: true
 mailcatcher_smtp_ip: 127.0.0.1
 mailcatcher_smtp_port: 1025
 mailcatcher_http_ip: 127.0.0.1
 mailcatcher_http_port: 1080
+# Set mailcatcher_msmtp to true to replace /usr/sbin/sendmail with
+# msmtp-mta to pass all outgoing email to Mailcatcher
+mailcatcher_msmtp: false
+mailcatcher_msmtp_from: "www-data@{{ inventory_hostname }}"
 ...

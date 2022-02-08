@@ -1,0 +1,20 @@
+---
+# https://marlam.de/msmtp/
+- name: Install and configure msmtp
+  block:
+
+    - name: Package msmtp-mta present
+      apt:
+        pkg:
+          - msmtp-mta
+        state: present
+
+    - name: msmtp config file in place
+      template:
+        src: msmtprc.j2
+        dest: /etc/msmtprc
+        mode: 0644
+
+  tags:
+    - mailcatcher
+...
