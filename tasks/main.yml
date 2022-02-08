@@ -37,7 +37,7 @@
       check_mode: false
       changed_when: false
       register: mailcatcher_which
-      failed_when: mailcatcher_which is not regex('^0|1')
+      failed_when: mailcatcher_which.rc is not regex('^0|1')
 
     - name: Check Mailcatcher version when installed
       block:
@@ -57,7 +57,7 @@
             mailcatcher_upgrade: true
           when: mailcatcher_installed is version(mailcatcher_version, '<')
 
-      when: mailcatcher_which == 0
+      when: mailcatcher_which.rc == 0
 
     - name: Install Mailcatcher
       gem:
