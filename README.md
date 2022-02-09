@@ -33,7 +33,7 @@ The following [defaults](defaults/main.yml) are defined:
 
 The primary URL of this repo is [`https://git.coop/webarch/mailcatcher`](https://git.coop/webarch/mailcatcher) however it is also [mirrored to GitHub](https://github.com/webarch-coop/ansible-role-mailcatcher) and [available via Ansible Galaxy](https://galaxy.ansible.com/chriscroome/mailcatcher).
 
-See the [GitLab releases page](https://git.coop/webarch/mailcatcher/-/releases) for details regarding each version, *please use a specific version* since the master branch is used for development.
+See the [GitLab releases page](https://git.coop/webarch/mailcatcher/-/releases) for details regarding each version, *please use a specific version* since the main branch is used for development.
 
 ## Apache reverse proxy
 
