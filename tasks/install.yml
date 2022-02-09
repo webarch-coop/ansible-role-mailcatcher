@@ -2,17 +2,17 @@
 - name: Mailcatcher install and configure
   block:
 
-    - name: Get all users
+    - name: Check that the Mailcatcher user is present
       getent:
         database: passwd
         key: "{{ mailcatcher_user }}"
-        split: ':'
+        fail_key: true
 
-    - name: Get all groups
+    - name: Check that the Mailcatcher group is present
       getent:
         database: group
         key: "{{ mailcatcher_group }}"
-        split: ':'
+        fail_key: true
 
     - name: Requirements present
       ansible.builtin.apt:
