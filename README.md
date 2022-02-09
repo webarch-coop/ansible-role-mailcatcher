@@ -2,7 +2,7 @@
 
 An Ansible role to install [Mailcatcher](https://mailcatcher.me/) and optionally [msmtp](https://marlam.de/msmtp/) on Debian and Ubuntu.
 
-If you only want to intercept email sent via SMPT to the Mailcatcher host and port and / or Sendmail path (as defined in the the [defaults/main.yml](defaults/main.yml) then you don't need to install msmtp, for example for PHP-FPM set:
+If you only want to intercept email sent via SMPT to the Mailcatcher host and port and / or Sendmail path (as defined in the [defaults/main.yml](defaults/main.yml) then you don't need to install msmtp, for example for PHP-FPM set:
 
 ```conf
 php_admin_value[sendmail_path] = /usr/local/bin/catchmail -fwww-data@example.org
