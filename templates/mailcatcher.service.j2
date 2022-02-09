@@ -5,10 +5,15 @@ Description=Mailcatcher
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/mailcatcher --foreground --no-quit \
+User={{ mailcatcher_user }}
+Group={{ mailcatcher_group }} 
+ExecStart={{ mailcatcher_path }} --foreground --no-quit \
    --smtp-ip {{ mailcatcher_smtp_ip }} --smtp-port {{ mailcatcher_smtp_port }} \
    --http-ip {{ mailcatcher_http_ip }} --http-port {{ mailcatcher_http_port }}
-ExecStop=/usr/bin/killall -9 mailcatcher
+ExecStop=/bin/kill -s QUIT $MAINPID
+{% if not mailcatcher_privileged %}
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+{% endif %}
 
 [Install]
 WantedBy=multi-user.target

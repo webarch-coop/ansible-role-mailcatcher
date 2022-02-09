@@ -26,19 +26,17 @@
           - "Path: {{ mailcatcher_headers.location | urlsplit('path') }}"
           - "Version: {{ mailcatcher_headers.location | urlsplit('path') | basename }}"
           - "Version number: {{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') }}"
-          - "Version number as string: {{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') | str }}"
+          - "Version number as string: {{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') | string }}"
         verbosity: 2
 
     - name: Set a variable for the latest version available
       ansible.builtin.set_fact:
-        mailcatcher_latest: "{{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') | str }}"
+        mailcatcher_latest: "{{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') | string }}"
 
     - name: Check if Mailcatcher is installed
-      ansible.builtin.command: which mailcatcher
-      check_mode: false
-      changed_when: false
-      register: mailcatcher_which
-      failed_when: mailcatcher_which.rc is not regex('^0|1')
+      stat:
+        path: "{{ mailcatcher_path }}"
+      register: mailcatcher_path_check
 
     - name: Check Mailcatcher version when installed
       block:
@@ -51,25 +49,33 @@
 
         - name: Set a variable for the installed version of Mailcatcher
           ansible.builtin.set_fact:
-            mailcatcher_installed: "{{ mailcatcher_version_check.stdout | replace('mailcatcher ', '') | trim }}"
+            mailcatcher_installed: "{{ mailcatcher_version_check.stdout | replace('mailcatcher ', '') | trim | string }}"
 
         - name: Set a fact if a newer version is available
           ansible.builtin.set_fact:
             mailcatcher_upgrade: true
           when: mailcatcher_installed is version(mailcatcher_latest, '<')
 
-      when: mailcatcher_which.rc == 0
+      when: mailcatcher_path_check.stat.exists 
 
     - name: Install Mailcatcher
       community.general.gem:
         name: mailcatcher
         version: "{{ mailcatcher_latest }}"
         state: present
+        bindir: "{{ mailcatcher_path | dirname }}"
         user_install: false
       when:
         - mailcatcher_latest is defined
         - ( mailcatcher_which.rc == 1 ) or ( mailcatcher_upgrade is defined and mailcatcher_upgrade )
       notify: Restart mailcatcher
+
+    - name: Set a fact to indicate that non-privileged user needs to bind to a port number greater than 1024
+      set_fact:
+        mailcatcher_privileged: false
+      when:
+        - mailcatcher_user != "root"
+        - ( mailcatcher_smtp_port | int <= 1024 ) or ( mailcatcher_http_port | int <= 1024 )
 
     - name: Systemd service file in place
       ansible.builtin.template:
