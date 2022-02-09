@@ -2,6 +2,18 @@
 - name: Mailcatcher install and configure
   block:
 
+    - name: Get all users
+      getent:
+        database: passwd
+        key: "{{ mailcatcher_user }}"
+        split: ':'
+
+    - name: Get all groups
+      getent:
+        database: group
+        key: "{{ mailcatcher_group }}"
+        split: ':'
+
     - name: Requirements present
       ansible.builtin.apt:
         pkg:
@@ -74,9 +86,9 @@
         - ( not mailcatcher_path_check.stat.exists ) or ( mailcatcher_upgrade is defined and mailcatcher_upgrade )
       notify: Restart mailcatcher
 
-    - name: Set a fact to indicate that non-privileged user needs to bind to a port number greater than 1024
+    - name: Set a fact to indicate that non-privileged user needs to bind to a port number less than 1024
       set_fact:
-        mailcatcher_privileged: false
+        mailcatcher_grant_capabilities: true
       when:
         - mailcatcher_user != "root"
         - ( mailcatcher_smtp_port | int <= 1024 ) or ( mailcatcher_http_port | int <= 1024 )
