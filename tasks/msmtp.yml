@@ -4,13 +4,13 @@
   block:
 
     - name: Package msmtp-mta present
-      apt:
+      ansible.builtin.apt:
         pkg:
           - msmtp-mta
         state: present
 
     - name: msmtp config file in place
-      template:
+      ansible.builtin.template:
         src: msmtprc.j2
         dest: /etc/msmtprc
         mode: 0644

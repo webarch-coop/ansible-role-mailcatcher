@@ -3,18 +3,18 @@
   block:
 
     - name: Stat Mailcatcher systemd service file
-      file:
+      ansible.builtin.file:
         stat: /etc/systemd/system/mailcatcher.service
       register: mailcatcher_systemd
 
     - name: Stop Mailcatcher
-      systemd:
+      ansible.builtin.systemd:
         name: mailcatcher
         state: stopped
       when: mailcatcher_systemd.stat.exists
 
     - name: Mailcatcher files absent
-      file:
+      ansible.builtin.file:
         path: "{{ path }}"
         state: absent
       loop:
@@ -22,7 +22,7 @@
         - /etc/systemd/system/mailcatcher.service
 
     - name: Mailcatcher absent
-      gem:
+      community.general.gem:
         name: mailcatcher
         state: absent
 

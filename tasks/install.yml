@@ -3,14 +3,14 @@
   block:
 
     - name: Requirements present
-      apt:
+      ansible.builtin.apt:
         pkg:
           - ruby-dev
           - libsqlite3-dev
         state: present
 
     - name: Check the latest version of Mailcatcher
-      uri:
+      ansible.builtin.uri:
         url: https://github.com/sj26/mailcatcher/releases/latest
         method: HEAD
         status_code: 302
@@ -20,7 +20,7 @@
       register: mailcatcher_headers
 
     - name: Debug Mailcatcher URI
-      debug:
+      ansible.builtin.debug:
         msg:
           - "Location: {{ mailcatcher_headers.location }}"
           - "Path: {{ mailcatcher_headers.location | urlsplit('path') }}"
@@ -30,11 +30,11 @@
         verbosity: 2
 
     - name: Set a variable for the latest version available
-      set_fact:
+      ansible.builtin.set_fact:
         mailcatcher_latest: "{{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') | str }}"
 
     - name: Check if Mailcatcher is installed
-      command: which mailcatcher
+      ansible.builtin.command: which mailcatcher
       check_mode: false
       changed_when: false
       register: mailcatcher_which
@@ -44,24 +44,24 @@
       block:
 
         - name: Check installed Mailcatcher version
-          command: mailcatcher --version
+          ansible.builtin.command: mailcatcher --version
           check_mode: false
           changed_when: false
           register: mailcatcher_version_check
 
         - name: Set a variable for the installed version of Mailcatcher
-          set_fact:
+          ansible.builtin.set_fact:
             mailcatcher_installed: "{{ mailcatcher_version_check.stdout | replace('mailcatcher ', '') | trim }}"
 
         - name: Set a fact if a newer version is available
-          set_fact:
+          ansible.builtin.set_fact:
             mailcatcher_upgrade: true
           when: mailcatcher_installed is version(mailcatcher_latest, '<')
 
       when: mailcatcher_which.rc == 0
 
     - name: Install Mailcatcher
-      gem:
+      community.general.gem:
         name: mailcatcher
         version: "{{ mailcatcher_latest }}"
         state: present
@@ -72,20 +72,22 @@
       notify: Restart mailcatcher
 
     - name: Systemd service file in place
-      template:
+      ansible.builtin.template:
         src: mailcatcher.service.j2
         dest: /etc/systemd/system/mailcatcher.service
         mode: 0644
-      notify: Restart mailcatcher
+      notify:
+        - Reload systemd
+        - Restart mailcatcher
 
     - name: Mailcatcher service enabled
-      systemd:
+      ansible.builtin.systemd:
         name: mailcatcher
         enabled: true
       notify: Restart mailcatcher
 
     - name: Include msmtp tasks
-      include_tasks: msmtp.yml
+      ansible.builtin.include_tasks: msmtp.yml
       when: mailcatcher_msmtp
 
   tags:

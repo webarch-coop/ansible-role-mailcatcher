@@ -2,17 +2,21 @@
 - name: Restart Mailcatcher
   block:
 
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+      listen: Reload systemd
+
     - name: Stop Mailcatcher
-      systemd:
+      ansible.builtin.systemd:
         name: mailcatcher
         state: stopped
       listen: Restart mailcatcher
 
     - name: Start Mailcatcher
-      systemd:
+      ansible.builtin.systemd:
         name: mailcatcher
         state: started
-        daemon_reload: true
       listen: Restart mailcatcher
 
   tags:
