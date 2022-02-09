@@ -1,5 +1,5 @@
 ---
-- name: Mailcatcher role
+- name: Mailcatcher install and configure
   block:
 
     - name: Requirements present
@@ -95,10 +95,6 @@
         name: mailcatcher
         enabled: true
       notify: Restart mailcatcher
-
-    - name: Include msmtp tasks
-      ansible.builtin.include_tasks: msmtp.yml
-      when: mailcatcher_msmtp
 
   tags:
     - mailcatcher

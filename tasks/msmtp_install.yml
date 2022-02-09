@@ -1,6 +1,5 @@
 ---
-# https://marlam.de/msmtp/
-- name: Install and configure msmtp
+- name: Install msmtp
   block:
 
     - name: Package msmtp-mta present

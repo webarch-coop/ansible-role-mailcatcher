@@ -1,0 +1,18 @@
+---
+- name: Uninstall msmtp
+  block:
+
+    - name: Package msmtp-mta absent
+      ansible.builtin.apt:
+        pkg:
+          - msmtp-mta
+        state: absent
+
+    - name: msmtp config file absent
+      ansible.builtin.file:
+        path: /etc/msmtprc
+        state: absent
+
+  tags:
+    - mailcatcher
+...

@@ -1,5 +1,5 @@
 ---
-- name: Mailcatcher absent
+- name: Mailcatcher uninstalled
   block:
 
     - name: Stat Mailcatcher systemd service file
