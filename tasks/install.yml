@@ -70,7 +70,7 @@
         user_install: false
       when:
         - mailcatcher_latest is defined
-        - ( mailcatcher_which.rc == 1 ) or ( mailcatcher_upgrade is defined and mailcatcher_upgrade )
+        - ( not mailcatcher_path_check.stat.exists ) or ( mailcatcher_upgrade is defined and mailcatcher_upgrade )
       notify: Restart mailcatcher
 
     - name: Set a fact to indicate that non-privileged user needs to bind to a port number greater than 1024
