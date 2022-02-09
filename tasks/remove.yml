@@ -13,6 +13,35 @@
         state: stopped
       when: mailcatcher_systemd.stat.exists
 
+    - name: Stat Mailcatcher
+      ansible.builtin.file:
+        stat: "{{ mailcatcher_path }}"
+      register: mailcatcher_executable
+
+    - name: When Mailcatcher is present
+      block:
+
+        - name: Check installed Mailcatcher version
+          ansible.builtin.command: "{{ mailcatcher_path }} --version"
+          check_mode: false
+          changed_when: false
+          register: mailcatcher_version
+
+        - name: Set a variable for the installed version of Mailcatcher
+          ansible.builtin.set_fact:
+            mailcatcher_installed: "{{ mailcatcher_version.stdout | replace('mailcatcher ', '') | trim | string }}"
+
+        - name: Mailcatcher absent
+          community.general.gem:
+            name: mailcatcher
+            version: "{{ mailcatcher_installed }}"
+            # Note that bindir was added in 3.3.0 of community.general
+            # bindir: "{{ mailcatcher_path | dirname }}"
+            user_install: false
+            state: absent
+
+      when: mailcatcher_executable.stat.exists
+
     - name: Mailcatcher files absent
       ansible.builtin.file:
         path: "{{ path }}"
@@ -20,11 +49,6 @@
       loop:
         - /usr/local/bin/mailcatcher
         - /etc/systemd/system/mailcatcher.service
-
-    - name: Mailcatcher absent
-      community.general.gem:
-        name: mailcatcher
-        state: absent
 
   tags:
     - mailcatcher

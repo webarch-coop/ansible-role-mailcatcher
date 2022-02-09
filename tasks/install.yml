@@ -3,13 +3,13 @@
   block:
 
     - name: Check that the Mailcatcher user is present
-      getent:
+      ansible.builtin.getent:
         database: passwd
         key: "{{ mailcatcher_user }}"
         fail_key: true
 
     - name: Check that the Mailcatcher group is present
-      getent:
+      ansible.builtin.getent:
         database: group
         key: "{{ mailcatcher_group }}"
         fail_key: true
@@ -46,15 +46,15 @@
         mailcatcher_latest: "{{ mailcatcher_headers.location | urlsplit('path') | basename | regex_replace('^v') | string }}"
 
     - name: Check if Mailcatcher is installed
-      stat:
+      ansible.builtin.stat:
         path: "{{ mailcatcher_path }}"
-      register: mailcatcher_path_check
+      register: mailcatcher_executable
 
     - name: Check Mailcatcher version when installed
       block:
 
         - name: Check installed Mailcatcher version
-          ansible.builtin.command: mailcatcher --version
+          ansible.builtin.command: "{{ mailcatcher_path }} --version"
           check_mode: false
           changed_when: false
           register: mailcatcher_version_check
@@ -71,7 +71,7 @@
           # when: mailcatcher_installed is version(mailcatcher_latest, '<')
           when: mailcatcher_installed != mailcatcher_latest
 
-      when: mailcatcher_path_check.stat.exists
+      when: mailcatcher_executable.stat.exists
 
     - name: Install Mailcatcher
       community.general.gem:
@@ -83,11 +83,11 @@
         user_install: false
       when:
         - mailcatcher_latest is defined
-        - ( not mailcatcher_path_check.stat.exists ) or ( mailcatcher_upgrade is defined and mailcatcher_upgrade )
+        - ( not mailcatcher_executable.stat.exists ) or ( mailcatcher_upgrade is defined and mailcatcher_upgrade )
       notify: Restart mailcatcher
 
     - name: Set a fact to indicate that non-privileged user needs to bind to a port number less than 1024
-      set_fact:
+      ansible.builtin.set_fact:
         mailcatcher_grant_capabilities: true
       when:
         - mailcatcher_user != "root"

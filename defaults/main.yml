@@ -1,4 +1,5 @@
 ---
+# Set mailcatcher to False to remove mailcatcher
 mailcatcher: true
 # Note that setting the bindir was added in 3.3.0 of community.general.gems
 # and Debian Bullseye Ansible is too old to use this setting
