@@ -6,9 +6,17 @@
       ansible.builtin.include_tasks: install.yml
       when: mailcatcher
 
+    - name: msmtp present
+      ansible.builtin.include_tasks: msmtp_install.yml
+      when: mailcatcher_msmtp
+
     - name: Mailcatcher absent
       ansible.builtin.include_tasks: remove.yml
       when: not mailcatcher
+
+    - name: msmtp absent
+      ansible.builtin.include_tasks: msmtp_remove.yml
+      when: not mailcatcher_msmtp
 
   tags:
     - mailcatcher
