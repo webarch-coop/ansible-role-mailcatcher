@@ -57,11 +57,11 @@
           ansible.builtin.command: "{{ mailcatcher_path }} --version"
           check_mode: false
           changed_when: false
-          register: mailcatcher_version_check
+          register: mailcatcher_version
 
         - name: Set a variable for the installed version of Mailcatcher
           ansible.builtin.set_fact:
-            mailcatcher_installed: "{{ mailcatcher_version_check.stdout | replace('mailcatcher ', '') | trim | string }}"
+            mailcatcher_installed: "{{ mailcatcher_version.stdout | replace('mailcatcher ', '') | trim | string }}"
 
         - name: Set a fact if a newer version is available
           ansible.builtin.set_fact:
@@ -77,10 +77,10 @@
       community.general.gem:
         name: mailcatcher
         version: "{{ mailcatcher_latest }}"
-        state: present
         # Note that bindir was added in 3.3.0 of community.general
         # bindir: "{{ mailcatcher_path | dirname }}"
         user_install: false
+        state: present
       when:
         - mailcatcher_latest is defined
         - ( not mailcatcher_executable.stat.exists ) or ( mailcatcher_upgrade is defined and mailcatcher_upgrade )
