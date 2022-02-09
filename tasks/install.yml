@@ -59,7 +59,7 @@
           # when: mailcatcher_installed is version(mailcatcher_latest, '<')
           when: mailcatcher_installed != mailcatcher_latest
 
-      when: mailcatcher_path_check.stat.exists 
+      when: mailcatcher_path_check.stat.exists
 
     - name: Install Mailcatcher
       community.general.gem:
