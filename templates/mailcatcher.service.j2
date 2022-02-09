@@ -5,7 +5,7 @@ Description=Mailcatcher
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/mailcatcher \ 
+ExecStart=/usr/local/bin/mailcatcher --foreground --no-quit \
    --smtp-ip {{ mailcatcher_smtp_ip }} --smtp-port {{ mailcatcher_smtp_port }} \
    --http-ip {{ mailcatcher_http_ip }} --http-port {{ mailcatcher_http_port }}
 ExecStop=/usr/bin/killall -9 mailcatcher
