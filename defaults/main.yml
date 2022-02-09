@@ -1,5 +1,7 @@
 ---
 mailcatcher: true
+# Note that setting the bindir was added in 3.3.0 of community.general.gems
+# and Debian Bullseye Ansible is too old to use this setting
 mailcatcher_path: /usr/local/bin/mailcatcher
 mailcatcher_user: mailcatcher
 mailcatcher_group: "{{ mailcatcher_user }}"

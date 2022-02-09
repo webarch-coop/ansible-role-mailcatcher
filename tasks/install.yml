@@ -66,7 +66,8 @@
         name: mailcatcher
         version: "{{ mailcatcher_latest }}"
         state: present
-        bindir: "{{ mailcatcher_path | dirname }}"
+        # Note that bindir was added in 3.3.0 of community.general
+        # bindir: "{{ mailcatcher_path | dirname }}"
         user_install: false
       when:
         - mailcatcher_latest is defined
