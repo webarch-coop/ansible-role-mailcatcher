@@ -14,8 +14,8 @@
       when: mailcatcher_systemd.stat.exists
 
     - name: Stat Mailcatcher
-      ansible.builtin.file:
-        stat: "{{ mailcatcher_path }}"
+      ansible.builtin.stat:
+        path: "{{ mailcatcher_path }}"
       register: mailcatcher_executable
 
     - name: When Mailcatcher is present
