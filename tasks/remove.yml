@@ -49,6 +49,8 @@
       loop:
         - /usr/local/bin/mailcatcher
         - /etc/systemd/system/mailcatcher.service
+      loop_control:
+        loop_var: path
 
   tags:
     - mailcatcher
