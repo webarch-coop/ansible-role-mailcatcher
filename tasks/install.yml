@@ -68,8 +68,8 @@
             mailcatcher_upgrade: true
           # Using a version comparision fails with the following
           # '<' not supported between instances of 'str' and 'int'
-          when: !str mailcatcher_installed is version(mailcatcher_latest, '<')
-          # when: mailcatcher_installed != mailcatcher_latest
+          # when: !str mailcatcher_installed is version(mailcatcher_latest, '<')
+          when: mailcatcher_installed != mailcatcher_latest
 
       when: mailcatcher_executable.stat.exists
 
