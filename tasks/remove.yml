@@ -3,8 +3,8 @@
   block:
 
     - name: Stat Mailcatcher systemd service file
-      ansible.builtin.file:
-        stat: /etc/systemd/system/mailcatcher.service
+      ansible.builtin.stat:
+        path: /etc/systemd/system/mailcatcher.service
       register: mailcatcher_systemd
 
     - name: Stop Mailcatcher
